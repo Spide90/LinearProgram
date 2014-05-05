@@ -154,7 +154,12 @@ public class LPReader {
 					} catch (NumberFormatException e) {
 					}
 					// must be a variable
-					variable = new Variable(token);
+					if (!lp.variableIsDefined(token)) {
+						variable = new Variable(token);
+						lp.addVariable(variable);
+					} else {
+						variable = lp.getVariable(token);
+					}
 					if (number == null) {
 						if (negative) {
 							number = -1;
@@ -239,7 +244,12 @@ public class LPReader {
 						//this is a constraint name... we have no field for the names ;)
 						continue;
 					}
-					variable = new Variable(token);
+					if (!lp.variableIsDefined(token)) {
+						variable = new Variable(token);
+						lp.addVariable(variable);
+					} else {
+						variable = lp.getVariable(token);
+					}
 					if (number == null) {
 						if (negative) {
 							number = -1;
@@ -268,7 +278,6 @@ public class LPReader {
 	private void createBounds() {
 		System.out.println(lp);
 		while(true) {
-			TermList termList = new TermList();
 			String line = null;
 			try {
 				line = reader.readLine();
@@ -279,16 +288,14 @@ public class LPReader {
 				break;
 			}
 			String[] tokens = line.split("\\s+");
-			Term term = null;
 			Variable variable = null;
 			boolean negative = false;
 			Number number = null;
 			Comparator comparator = null;
 			for (String token : tokens) {
 				switch (token.toLowerCase()) {
-				case "bounds":
-					createBounds();
-					break;
+				case "end":
+					return;
 				case "+":
 					break;
 				case "-":
@@ -302,6 +309,12 @@ public class LPReader {
 					break;
 				case ">=":
 					comparator = Comparator.GEQ;
+					break;
+				case "inf":
+					number = Float.MAX_VALUE;
+					break;
+				case "infinity":
+					number = Float.MAX_VALUE;
 					break;
 				default:
 					//some kind of expression
@@ -328,21 +341,26 @@ public class LPReader {
 						//this is a constraint name... we have no field for the names ;)
 						continue;
 					}
-					variable = new Variable(token);
-					if (number == null) {
-						if (negative) {
-							number = -1;
-						} else {
-							number = 1;
-						}
-						negative = false;
-						term = new Term(variable, number.floatValue());
+					if (!lp.variableIsDefined(token)) {
+						variable = new Variable(token);
+						lp.addVariable(variable);
 					} else {
-						term = new Term(variable, number.floatValue());
+						variable = lp.getVariable(token);
 					}
-					termList.list.add(term);
+					if (comparator.equals(Comparator.GEQ)) {
+						if (number.floatValue() == Float.MAX_VALUE) {
+							variable.lowerIsInfinity = true;
+						} else {
+							variable.lowerBound = number.floatValue();
+						}
+					} else {
+						if (number.floatValue() == Float.MAX_VALUE) {
+							variable.lowerIsInfinity = true;
+						} else {
+							variable.upperBound = number.floatValue();
+						}
+					}
 					number = null;
-					term = null;
 					variable = null;
 					break;
 				}
