@@ -35,6 +35,7 @@ public class LPWriter {
 			writeBound(e.getValue());
 			System.out.println("[DEBUG] write Bounds" + e.getKey());
 		}
+		writer.println("END");
 	}
 	
 	public void close(){

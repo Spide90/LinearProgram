@@ -24,6 +24,13 @@ public class TermList {
 		return result;
 	}
 	
+	public Term findTerm(Variable v) {
+		for (Term t : list) {
+			if (t.variable.equals(v)) return t;
+		}
+		return null;
+	}
+	
 	public Iterator<Term> iterator(){
 		return list.iterator();
 	}

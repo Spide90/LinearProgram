@@ -27,5 +27,15 @@ public class logicTest {
 		writer.writeProgram(logic.leqOnlyConstraints());
 		writer.close();
 	}
+	
+	@Test
+	public void testFindSlack() {
+		LPReader reader = new LPReader(new File("testFileSlackIn.lp"));
+		LPProgram readLpProgram = reader.getLP();
+		LPLogic logic = new LPLogic(readLpProgram);
+		LPWriter writer = new LPWriter("testFileSlackOut.lp");
+		writer.writeProgram(logic.removeSlackVariables());
+		writer.close();
+	}
 
 }

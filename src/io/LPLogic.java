@@ -2,10 +2,12 @@ package io;
 
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Map.Entry;
 
 import model.Comparator;
 import model.Constraint;
 import model.LPProgram;
+import model.Term;
 import model.Variable;
 
 public class LPLogic {
@@ -42,30 +44,67 @@ public class LPLogic {
 		return toAlter;
 	}
 	
+	public LPProgram removeSlackVariables() {
+		LPProgram toAlter = source.getCopy();
+		for (Entry<String,Variable> e : source.variables.entrySet()) {
+			if (isSlackVariable(e.getValue(),toAlter)) {
+				Constraint c = toAlter.findVariable(e.getValue());
+				ListIterator<Term> iter = c.terms.list.listIterator();
+				while (iter.hasNext()) {
+					Term t = iter.next();
+					if (t.variable.equals(e.getValue())) iter.remove();
+					//FIXME check range
+					break;
+				}
+			}
+		}
+		return toAlter;
+	}
+	
+	public LPProgram toDualForm(){
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+	
+	public LPProgram removeSplitVariables(){
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+	
 	/**
 	 * Test whether a Variable is a slack Variable. A Slack Variable is used
-	 * to change a LEQ - constraint into a EQ-constraint. (a + b <= c --> a + b + s = c)
+	 * to change a UNEQ - constraint into a EQ-constraint. (a + b <= c --> a + b + s = c)
 	 * 
 	 * @param v
 	 * @return
 	 */
 	private static boolean isSlackVariable(Variable v, LPProgram prog){
 		if (prog.objective.function.usesVariable(v)) return false;
-		Constraint occurence = null;
+		Constraint occurenceConstraint = null;
+		Term occurenceTerm = null;
 		for (Constraint c : prog.constraints) {
 			if (c.terms.usesVariable(v)) {
-				if (occurence == null) {
-					occurence = c;
+				if (occurenceConstraint == null) {
+					occurenceConstraint = c;
+					for (Term t : c.terms.list) {
+						if (t.variable.equals(v)) occurenceTerm = t;
+					}
 				} else {
+					//Assume that a Variable that occurse twice is not a slack variable
 					//FIXME case Ax + y = 0, Bx + y = 0 for A==B
 					return false;
 				}
 			}
 		}
-		if (occurence.comparator != Comparator.EQ) return false;
-		if (occurence.comparator == Comparator.LEQ) {
-			//TODO continue
+		// Some Sanity Checks
+		assert(occurenceConstraint.comparator != null);
+		assert(occurenceTerm.constant != 0);
+		
+		// Test whether the variable is only unnecessary or a slack Variable 
+		//FIXME tomorrow... this is quite wrong
+		if (occurenceConstraint.comparator != Comparator.EQ) return false;
+		if (occurenceConstraint.comparator == Comparator.LEQ) {
+			return (occurenceTerm.constant > 0);
+		} else {
+			return (occurenceTerm.constant < 0);
 		}
-		return true;
 	}
 }

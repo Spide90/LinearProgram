@@ -37,7 +37,8 @@ public class Variable {
 	
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) return false;
 		if (!(obj instanceof Variable)) return false;
-		return ((String)obj).equals(name);
+		return ((Variable)obj).name.equals(name);
 	}
 }
