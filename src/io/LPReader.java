@@ -1,4 +1,4 @@
-package io;
+package src.io;
 
 public class LPReader {
 
