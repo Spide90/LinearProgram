@@ -337,34 +337,30 @@ public class LPReader {
 					} catch (NumberFormatException e) {
 					}
 					//must be a variable
-					if (token.endsWith(":")) {
-						//this is a constraint name... we have no field for the names ;)
-						continue;
-					}
 					if (!lp.variableIsDefined(token)) {
 						variable = new Variable(token);
 						lp.addVariable(variable);
 					} else {
 						variable = lp.getVariable(token);
 					}
-					if (comparator.equals(Comparator.GEQ)) {
-						if (number.floatValue() == Float.MAX_VALUE) {
-							variable.lowerIsInfinity = true;
-						} else {
-							variable.lowerBound = number.floatValue();
-						}
-					} else {
-						if (number.floatValue() == Float.MAX_VALUE) {
-							variable.lowerIsInfinity = true;
-						} else {
-							variable.upperBound = number.floatValue();
-						}
-					}
-					number = null;
-					variable = null;
 					break;
 				}
 			}
+			if (comparator.equals(Comparator.GEQ)) {
+				if (number.floatValue() == Float.MAX_VALUE) {
+					variable.lowerIsInfinity = true;
+				} else {
+					variable.lowerBound = number.floatValue();
+				}
+			} else {
+				if (number.floatValue() == Float.MAX_VALUE) {
+					variable.lowerIsInfinity = true;
+				} else {
+					variable.upperBound = number.floatValue();
+				}
+			}
+			number = null;
+			variable = null;
 		}
 	}
 }
