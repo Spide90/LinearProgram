@@ -9,14 +9,13 @@ public class LPProgram {
 	public LinkedList<Constraint> constraints = new LinkedList<Constraint>();
 	public HashMap<String, Variable> variables = new HashMap<String,Variable>();
 	
-	
 	@Override
 	public String toString() {
 		return "objective: " + objective.toString() + " constraints: " + constraints.toString();
 	}
 	
 	public void addVariable (Variable var) {
-		if (!variables.containsKey(var.name)) {
+		if (variables.containsKey(var.name)) {
 			throw new IllegalStateException("Variable allready defined, do better Goldi!");
 		}
 		variables.put(var.name, var);
