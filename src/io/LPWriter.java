@@ -31,6 +31,10 @@ public class LPWriter {
 		}
 	}
 	
+	public void close(){
+		writer.close();
+	}
+	
 	public void writeObjective(Objective objective) {
 		writer.println(objective.head == Header.MAX ? "Maximize" : "Minimize");
 		writeTermList(objective.function);
@@ -61,7 +65,7 @@ public class LPWriter {
 		boolean first = true;
 		for (Term t : list.list) {
 			if (first) {
-				writer.print(t.constant + " " + t.variable);
+				writer.print(t.constant + " " + t.variable + " ");
 				first = false;
 			}
 			writer.print((t.constant < 0 ?"-":"+") + " " + Math.abs(t.constant) + " "+t.variable);
