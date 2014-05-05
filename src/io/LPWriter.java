@@ -33,6 +33,7 @@ public class LPWriter {
 		writer.println("Bounds");
 		for (Entry<String,Variable> e : program.variables.entrySet()) {
 			writeBound(e.getValue());
+			System.out.println("[DEBUG] write Bounds" + e.getKey());
 		}
 	}
 	
@@ -50,6 +51,8 @@ public class LPWriter {
 		if (!var.lowerIsInfinity && var.lowerBound == 0 && var.upperIsInfinity) return;
 		if (var.lowerIsInfinity && var.upperIsInfinity) {
 			writer.print(var.name + " free");
+			writer.println();
+			return;
 		}
 		if (!(!var.lowerIsInfinity && var.lowerBound == 0)) {
 			writer.write((var.lowerIsInfinity ? "-Inf" : Float.valueOf(var.lowerBound)) + " <= ");
