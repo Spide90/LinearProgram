@@ -22,4 +22,8 @@ public class Variable {
 		this.upperIsInfinity = upperIsInfinity;
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
 }
