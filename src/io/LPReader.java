@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import model.Comparator;
+import model.Constraint;
 import model.Header;
 import model.LPProgram;
 import model.Objective;
@@ -14,11 +16,16 @@ import model.Term;
 import model.TermList;
 import model.Variable;
 
+/**
+ * reads a linear program from a file this is the more complicated way because
+ * we don't use a tree structure because helge said we don't need it ...
+ * 
+ */
 public class LPReader {
-	
+
 	private BufferedReader reader;
 	private LPProgram lp;
-	
+
 	public LPReader(File file) {
 		try {
 			Reader input = new FileReader(file);
@@ -28,17 +35,18 @@ public class LPReader {
 		}
 		readLP();
 	}
-	
+
 	private void readLP() {
 		lp = new LPProgram();
-		while(true) {
+		while (true) {
 			String line = null;
 			try {
 				line = reader.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (line == null) break;
+			if (line == null)
+				break;
 			String[] tokens = line.split("\\s+");
 			for (String token : tokens) {
 				switch (token.toLowerCase()) {
@@ -66,10 +74,11 @@ public class LPReader {
 			}
 		}
 	}
-	
+
 	private void createObjective(Token tok) {
 		if (!(tok.equals(Token.MAX) || tok.equals(Token.MIN))) {
-			throw new IllegalArgumentException("expected min or max but found: " + tok);
+			throw new IllegalArgumentException(
+					"expected min or max but found: " + tok);
 		}
 		Header header;
 		if (tok.equals(Token.MAX)) {
@@ -77,9 +86,9 @@ public class LPReader {
 		} else {
 			header = Header.MIN;
 		}
-		//read objective function
+		// read objective function
 		TermList termList = new TermList();
-		while(true) {
+		while (true) {
 			String line = null;
 			try {
 				line = reader.readLine();
@@ -121,25 +130,30 @@ public class LPReader {
 					break;
 				case "-":
 					negative = true;
+					break;
 				default:
-					//some kind of expression
+					// some kind of expression
 					try {
-						//int?
+						// int?
 						int literal = Integer.parseInt(token);
-						if (negative) literal *= -1;
+						if (negative)
+							literal *= -1;
+						negative = false;
 						number = literal;
 						break;
 					} catch (NumberFormatException e) {
 					}
 					try {
-						//double?
+						// double?
 						double literal = Double.parseDouble(token);
-						if (negative) literal *= -1;
+						if (negative)
+							literal *= -1;
+						negative = false;
 						number = literal;
 						break;
 					} catch (NumberFormatException e) {
 					}
-					//must be a variable
+					// must be a variable
 					variable = new Variable(token);
 					if (number == null) {
 						if (negative) {
@@ -147,9 +161,10 @@ public class LPReader {
 						} else {
 							number = 1;
 						}
-						term = new Term(variable, (Float) number);
+						negative = false;
+						term = new Term(variable, number.floatValue());
 					} else {
-						term = new Term(variable, (Float) number);
+						term = new Term(variable, number.floatValue());
 					}
 					termList.list.add(term);
 					number = null;
@@ -160,9 +175,178 @@ public class LPReader {
 			}
 		}
 	}
-	
+
 	private void createConstraints() {
 		System.out.println(lp);
-		System.out.println("you shall not pass!");
+		while(true) {
+			TermList termList = new TermList();
+			String line = null;
+			try {
+				line = reader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (line == null) {
+				break;
+			}
+			String[] tokens = line.split("\\s+");
+			Term term = null;
+			Variable variable = null;
+			boolean negative = false;
+			Number number = null;
+			Comparator comparator = null;
+			for (String token : tokens) {
+				switch (token.toLowerCase()) {
+				case "bounds":
+					createBounds();
+					break;
+				case "+":
+					break;
+				case "-":
+					negative = true;
+					break;
+				case "=":
+					comparator = Comparator.EQ;
+					break;
+				case "<=":
+					comparator = Comparator.LEQ;
+					break;
+				case ">=":
+					comparator = Comparator.GEQ;
+					break;
+				default:
+					//some kind of expression
+					try {
+						//int?
+						int literal = Integer.parseInt(token);
+						if (negative) literal *= -1;
+						negative = false;
+						number = literal;
+						break;
+					} catch (NumberFormatException e) {
+					}
+					try {
+						//double?
+						double literal = Double.parseDouble(token);
+						if (negative) literal *= -1;
+						negative = false;
+						number = literal;
+						break;
+					} catch (NumberFormatException e) {
+					}
+					//must be a variable
+					if (token.endsWith(":")) {
+						//this is a constraint name... we have no field for the names ;)
+						continue;
+					}
+					variable = new Variable(token);
+					if (number == null) {
+						if (negative) {
+							number = -1;
+						} else {
+							number = 1;
+						}
+						negative = false;
+						term = new Term(variable, number.floatValue());
+					} else {
+						term = new Term(variable, number.floatValue());
+					}
+					termList.list.add(term);
+					number = null;
+					term = null;
+					variable = null;
+					break;
+				}
+			}
+			if (number != null) {
+				Constraint constraint = new Constraint(termList, number.floatValue(), comparator);
+				lp.constraints.add(constraint);
+			}
+		}
+	}
+
+	private void createBounds() {
+		System.out.println(lp);
+		while(true) {
+			TermList termList = new TermList();
+			String line = null;
+			try {
+				line = reader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (line == null) {
+				break;
+			}
+			String[] tokens = line.split("\\s+");
+			Term term = null;
+			Variable variable = null;
+			boolean negative = false;
+			Number number = null;
+			Comparator comparator = null;
+			for (String token : tokens) {
+				switch (token.toLowerCase()) {
+				case "bounds":
+					createBounds();
+					break;
+				case "+":
+					break;
+				case "-":
+					negative = true;
+					break;
+				case "=":
+					comparator = Comparator.EQ;
+					break;
+				case "<=":
+					comparator = Comparator.LEQ;
+					break;
+				case ">=":
+					comparator = Comparator.GEQ;
+					break;
+				default:
+					//some kind of expression
+					try {
+						//int?
+						int literal = Integer.parseInt(token);
+						if (negative) literal *= -1;
+						negative = false;
+						number = literal;
+						break;
+					} catch (NumberFormatException e) {
+					}
+					try {
+						//double?
+						double literal = Double.parseDouble(token);
+						if (negative) literal *= -1;
+						negative = false;
+						number = literal;
+						break;
+					} catch (NumberFormatException e) {
+					}
+					//must be a variable
+					if (token.endsWith(":")) {
+						//this is a constraint name... we have no field for the names ;)
+						continue;
+					}
+					variable = new Variable(token);
+					if (number == null) {
+						if (negative) {
+							number = -1;
+						} else {
+							number = 1;
+						}
+						negative = false;
+						term = new Term(variable, number.floatValue());
+					} else {
+						term = new Term(variable, number.floatValue());
+					}
+					termList.list.add(term);
+					number = null;
+					term = null;
+					variable = null;
+					break;
+				}
+			}
+		}
 	}
 }
