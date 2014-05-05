@@ -2,8 +2,8 @@ package model;
 
 public class Term {
 	
-	float constant = 1f;
-	Variable variable = null;
+	public float constant = 1f;
+	public Variable variable = null;
 		
 	public Term(Variable variable) {
 		this.variable = variable;

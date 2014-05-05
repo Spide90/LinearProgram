@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class TermList {
 	
-	LinkedList<Term> list;
+	public LinkedList<Term> list;
 	
 	public TermList() {
 		list = new LinkedList<Term>();

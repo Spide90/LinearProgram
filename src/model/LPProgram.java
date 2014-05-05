@@ -9,6 +9,5 @@ public class LPProgram {
 	public LinkedList<Constraint> constraints = new LinkedList<Constraint>();
 	public HashMap<String, Variable> variables = new HashMap<String,Variable>();
 	
-	
 
 }
