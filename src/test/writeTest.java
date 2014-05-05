@@ -25,8 +25,11 @@ public class writeTest {
 	public void setUp() throws Exception {
 		testProgram = new LPProgram();
 		Variable varX = new Variable("x");
+		varX.setSource(testProgram);
 		Variable varY = new Variable("Y",-2f,false,20f,false);
+		varY.setSource(testProgram);
 		Variable VarZ = new Variable("Z",1,true,1,true);
+		VarZ.setSource(testProgram);
 		Term termX1 = new Term(varX);
 		Term termX2 = new Term(varX,3);
 		Term termY = new Term(varY,-2);

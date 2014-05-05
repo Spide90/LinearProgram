@@ -1,7 +1,7 @@
 package io;
 
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Map.Entry;
 
 import model.Constraint;
 import model.Header;
@@ -9,6 +9,7 @@ import model.LPProgram;
 import model.Objective;
 import model.Term;
 import model.TermList;
+import model.Variable;
 
 public class LPWriter {
 
@@ -29,6 +30,10 @@ public class LPWriter {
 		for (Constraint c : program.constraints) {
 			writeConstraint(c);
 		}
+		writer.println("Bounds");
+		for (Entry<String,Variable> e : program.variables.entrySet()) {
+			writeBound(e.getValue());
+		}
 	}
 	
 	public void close(){
@@ -38,6 +43,18 @@ public class LPWriter {
 	public void writeObjective(Objective objective) {
 		writer.println(objective.head == Header.MAX ? "Maximize" : "Minimize");
 		writeTermList(objective.function);
+		writer.println();
+	}
+	
+	public void writeBound(Variable var){
+		if (!var.lowerIsInfinity && var.lowerBound == 0 && var.upperIsInfinity) return;
+		if (!(!var.lowerIsInfinity && var.lowerBound == 0)) {
+			writer.write((var.lowerIsInfinity ? "-Inf" : Float.valueOf(var.lowerBound)) + " <= ");
+		} 
+		writer.write(var.name);
+		if (!var.upperIsInfinity) {
+			writer.write(" <= "+(var.lowerIsInfinity ? "-Inf" : Float.valueOf(var.lowerBound)));
+		}
 		writer.println();
 	}
 	
