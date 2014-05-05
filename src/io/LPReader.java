@@ -52,22 +52,22 @@ public class LPReader {
 				switch (token.toLowerCase()) {
 				case "maximize":
 					createObjective(Token.MAX);
-					break;
+					return;
 				case "minimize":
 					createObjective(Token.MIN);
-					break;
+					return;
 				case "minimum":
 					createObjective(Token.MIN);
-					break;
+					return;
 				case "maximum":
 					createObjective(Token.MAX);
-					break;
+					return;
 				case "min":
 					createObjective(Token.MIN);
-					break;
+					return;
 				case "max":
 					createObjective(Token.MAX);
-					break;
+					return;
 				default:
 					break;
 				}
@@ -110,22 +110,22 @@ public class LPReader {
 					objective = new Objective(termList, header);
 					lp.objective = objective;
 					createConstraints();
-					break;
+					return;
 				case "such":
 					objective = new Objective(termList, header);
 					lp.objective = objective;
 					createConstraints();
-					break;
+					return;
 				case "st":
 					objective = new Objective(termList, header);
 					lp.objective = objective;
 					createConstraints();
-					break;
+					return;
 				case "s.t.":
 					objective = new Objective(termList, header);
 					lp.objective = objective;
 					createConstraints();
-					break;
+					return;
 				case "+":
 					break;
 				case "-":
@@ -204,7 +204,7 @@ public class LPReader {
 				switch (token.toLowerCase()) {
 				case "bounds":
 					createBounds();
-					break;
+					return;
 				case "+":
 					break;
 				case "-":
@@ -357,6 +357,7 @@ public class LPReader {
 					variable.lowerIsInfinity = true;
 				} else {
 					variable.upperBound = number.floatValue();
+					variable.upperIsInfinity = false;
 				}
 			}
 			number = null;
