@@ -27,4 +27,9 @@ public class TermList {
 	public Iterator<Term> iterator(){
 		return list.iterator();
 	}
+	
+	@Override
+	public String toString() {
+		return list.toString();
+	}
 }

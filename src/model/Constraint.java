@@ -12,4 +12,8 @@ public class Constraint {
 		this.comparator = comparator;
 	}
 	
+	@Override
+	public String toString() {
+		return "constraint: " + terms + " " + comparator + " " + constant + "\n";
+	}
 }
