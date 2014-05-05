@@ -140,7 +140,6 @@ public class LPReader {
 					}
 					//must be a variable
 					variable = new Variable(token);
-					lp.variables.put(token, variable);
 					if (term != null && term.variable != null) {
 						termList.list.add(term);
 					} else {

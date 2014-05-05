@@ -13,5 +13,10 @@ public class Term {
 		this.variable = variable;
 		this.constant = constant;
 	}
+	
+	@Override
+	public String toString() {
+		return Float.toString(constant) + variable;
+	}
 
 }
