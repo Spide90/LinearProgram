@@ -34,4 +34,10 @@ public class Variable {
 	public String toString() {
 		return name;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Variable)) return false;
+		return ((String)obj).equals(name);
+	}
 }

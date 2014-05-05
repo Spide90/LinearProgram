@@ -9,6 +9,9 @@ public class Objective {
 		this.head = head;
 		this.function = function;
 	}
+	public Objective getCopyForProgram(LPProgram prog) {
+		return new Objective(function.getCopyForProgram(prog), this.head);
+	}
 	
 	@Override
 	public String toString() {

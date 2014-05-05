@@ -2,6 +2,7 @@ package model;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
 public class LPProgram {
 	
@@ -31,5 +32,22 @@ public class LPProgram {
 	
 	public boolean variableIsDefined(String name) {
 		return variables.containsKey(name);
+	}
+	
+	/**
+	 * 
+	 * @return A copy of the original Program, that can be altered without second thoughts!
+	 */
+	public LPProgram getCopy(){
+		LPProgram newProgram = new LPProgram();
+		for (Entry<String,Variable> e : variables.entrySet()) {
+			newProgram.addVariable(e.getValue());
+			System.out.println("DEBUG - ("+e.getKey() + e.getValue()+ ")");
+		}
+		for (Constraint c : constraints) {
+			newProgram.constraints.add(c.getCopyForProgram(newProgram));
+		}	
+		newProgram.objective = objective.getCopyForProgram(newProgram);
+		return newProgram;
 	}
 }
