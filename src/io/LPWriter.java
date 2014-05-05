@@ -48,6 +48,9 @@ public class LPWriter {
 	
 	public void writeBound(Variable var){
 		if (!var.lowerIsInfinity && var.lowerBound == 0 && var.upperIsInfinity) return;
+		if (var.lowerIsInfinity && var.upperIsInfinity) {
+			writer.print(var.name + " free");
+		}
 		if (!(!var.lowerIsInfinity && var.lowerBound == 0)) {
 			writer.write((var.lowerIsInfinity ? "-Inf" : Float.valueOf(var.lowerBound)) + " <= ");
 		} 
@@ -86,7 +89,7 @@ public class LPWriter {
 				first = false;
 				continue;
 			}
-			writer.print((t.constant < 0 ?"-":"+") + " " + Math.abs(t.constant) + " "+t.variable);
+			writer.print((t.constant < 0 ?" -":" +") + " " + Math.abs(t.constant) + " "+t.variable);
 		}
 	}
 	

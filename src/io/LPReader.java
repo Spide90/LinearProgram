@@ -363,4 +363,9 @@ public class LPReader {
 			variable = null;
 		}
 	}
+	
+	public LPProgram getLP() {
+		return lp;
+	}
+	
 }

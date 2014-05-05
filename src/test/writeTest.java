@@ -1,8 +1,10 @@
 package test;
 
 import static org.junit.Assert.*;
+import io.LPReader;
 import io.LPWriter;
 
+import java.io.File;
 import java.util.LinkedList;
 
 import model.Comparator;
@@ -64,9 +66,18 @@ public class writeTest {
 	}
 
 	@Test
-	public void test() {
+	public void testWrite() {
 		LPWriter writer = new LPWriter("writeTest1.lp");
 		writer.writeProgram(testProgram);
+		writer.close();
+	}
+	
+	@Test
+	public void testReadAndWrite() {
+		LPReader reader = new LPReader(new File("testFile.lp"));
+		LPProgram readLpProgram = reader.getLP();
+		LPWriter writer = new LPWriter("readWriteTest.lp");
+		writer.writeProgram(readLpProgram);
 		writer.close();
 	}
 
