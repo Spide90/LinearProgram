@@ -55,6 +55,9 @@ public class writeTest {
 		
 		testProgram.objective = new Objective(t1, Header.MAX);
 		testProgram.constraints = cs;
+		
+		System.out.println("TestProgram 1: ");
+		System.out.println(testProgram);
 	}
 
 	@Test

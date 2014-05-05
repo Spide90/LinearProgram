@@ -2,6 +2,8 @@ package model;
 
 public class Variable {
 
+	public LPProgram source = null;
+	
 	public String name;
 	public float lowerBound = 0;
 	public boolean lowerIsInfinity = false;
@@ -22,6 +24,12 @@ public class Variable {
 		this.upperIsInfinity = upperIsInfinity;
 	}
 
+	public void setSource(LPProgram program) {
+		if (program == null) return;
+		program.addVariable(this);
+		this.source = program;
+	}
+	
 	@Override
 	public String toString() {
 		return name;

@@ -67,6 +67,7 @@ public class LPWriter {
 			if (first) {
 				writer.print(t.constant + " " + t.variable + " ");
 				first = false;
+				continue;
 			}
 			writer.print((t.constant < 0 ?"-":"+") + " " + Math.abs(t.constant) + " "+t.variable);
 		}
