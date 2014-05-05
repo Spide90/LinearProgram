@@ -94,6 +94,7 @@ public class LPReader {
 			Term term = null;
 			Variable variable = null;
 			boolean negative = false;
+			Number number = null;
 			for (String token : tokens) {
 				switch (token.toLowerCase()) {
 				case "subject":
@@ -126,7 +127,7 @@ public class LPReader {
 						//int?
 						int literal = Integer.parseInt(token);
 						if (negative) literal *= -1;
-						term = new Term(variable, literal);
+						number = literal;
 						break;
 					} catch (NumberFormatException e) {
 					}
@@ -134,18 +135,24 @@ public class LPReader {
 						//double?
 						double literal = Double.parseDouble(token);
 						if (negative) literal *= -1;
-						term = new Term(variable, (float) literal);
+						number = literal;
 						break;
 					} catch (NumberFormatException e) {
 					}
 					//must be a variable
 					variable = new Variable(token);
-					if (term != null && term.variable != null) {
-						termList.list.add(term);
+					if (number == null) {
+						if (negative) {
+							number = -1;
+						} else {
+							number = 1;
+						}
+						term = new Term(variable, (Float) number);
 					} else {
-						term = new Term(variable);
-						termList.list.add(term);
+						term = new Term(variable, (Float) number);
 					}
+					termList.list.add(term);
+					number = null;
 					term = null;
 					variable = null;
 					break;
@@ -155,6 +162,7 @@ public class LPReader {
 	}
 	
 	private void createConstraints() {
+		System.out.println(lp);
 		System.out.println("you shall not pass!");
 	}
 }
