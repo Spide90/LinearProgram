@@ -1,6 +1,8 @@
 package io;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map.Entry;
 
@@ -13,12 +15,12 @@ import model.Variable;
 public class LPLogic {
 
 	LPProgram source;
-	
+
 	public LPLogic(LPProgram source) {
 		this.source = source;
 	}
-	
-	public LPProgram leqOnlyConstraints(){
+
+	public LPProgram leqOnlyConstraints() {
 		LPProgram toAlter = source.getCopy();
 		ListIterator<Constraint> iter = toAlter.constraints.listIterator();
 		Constraint c, c_;
@@ -39,72 +41,80 @@ public class LPLogic {
 			default:
 				break;
 			}
-			
+
 		}
 		return toAlter;
 	}
-	
-	public LPProgram removeSlackVariables() {
-		LPProgram toAlter = source.getCopy();
-		for (Entry<String,Variable> e : source.variables.entrySet()) {
-			if (isSlackVariable(e.getValue(),toAlter)) {
-				Constraint c = toAlter.findVariable(e.getValue());
-				ListIterator<Term> iter = c.terms.list.listIterator();
-				while (iter.hasNext()) {
-					Term t = iter.next();
-					if (t.variable.equals(e.getValue())) iter.remove();
-					//FIXME check range
-					break;
-				}
-			}
-		}
-		return toAlter;
-	}
-	
-	public LPProgram toDualForm(){
-		throw new UnsupportedOperationException("Not yet implemented");
-	}
-	
-	public LPProgram removeSplitVariables(){
-		throw new UnsupportedOperationException("Not yet implemented");
-	}
-	
+
 	/**
-	 * Test whether a Variable is a slack Variable. A Slack Variable is used
-	 * to change a UNEQ - constraint into a EQ-constraint. (a + b <= c --> a + b + s = c)
+	 * * Test whether a Variable is a slack Variable. A Slack Variable is used
+	 * to change a UNEQ - constraint into a EQ-constraint. (a + b <= c --> a + b
+	 * + s = c) We assume the following properties:
 	 * 
-	 * @param v
+	 * <ul>
+	 * <li>Slack Variables are not contained in the objective Function</li>
+	 * <li>Slack Variables occurs in only 1 constraint. (Assume there are no
+	 * equal constraint)</li>
+	 * <li>Slack Variables are either bounded by [-inf,0] or [0,inf]</li>
+	 * <li>Constant Factors in Terms are != 0
+	 * </ul>
+	 * 
 	 * @return
 	 */
-	private static boolean isSlackVariable(Variable v, LPProgram prog){
-		if (prog.objective.function.usesVariable(v)) return false;
-		Constraint occurenceConstraint = null;
-		Term occurenceTerm = null;
-		for (Constraint c : prog.constraints) {
-			if (c.terms.usesVariable(v)) {
-				if (occurenceConstraint == null) {
-					occurenceConstraint = c;
-					for (Term t : c.terms.list) {
-						if (t.variable.equals(v)) occurenceTerm = t;
-					}
+	public LPProgram removeSlackVariables() {
+		LPProgram toAlter = source.getCopy();
+		HashMap<String, LinkedList<Constraint>> postingMap = toAlter
+				.getPostingList();
+
+		for (Entry<String, Variable> e : toAlter.variables.entrySet()) {
+			Variable v = e.getValue();
+
+			if (!((v.lowerIsInfinity && !v.upperIsInfinity && v.upperBound == 0) || (!v.lowerIsInfinity
+					&& v.upperIsInfinity && v.lowerBound == 0)))
+				continue;
+
+			if (source.objective.function.usesVariable(v))
+				continue;
+
+			LinkedList<Constraint> postingList = postingMap.get(v.name);
+			if (postingList.size() > 1)
+				continue;
+			if (postingList.size() == 0)
+				continue;
+			
+			Constraint c = postingList.getFirst();
+			if (c.comparator != Comparator.EQ)
+				continue;
+			
+			Term t = c.terms.findTerm(v);
+			assert (t != null);
+			boolean postiveVar = !v.lowerIsInfinity
+					&& v.upperIsInfinity && v.lowerBound == 0;
+			
+			c.terms.removeTerm(t);
+			if (postiveVar) {
+				if (t.constant > 0) {
+					c.comparator = Comparator.LEQ;
 				} else {
-					//Assume that a Variable that occurse twice is not a slack variable
-					//FIXME case Ax + y = 0, Bx + y = 0 for A==B
-					return false;
+					c.comparator = Comparator.GEQ;
+				}
+			} else {
+				if (t.constant < 0) {
+					c.comparator = Comparator.LEQ;
+				} else {
+					c.comparator = Comparator.GEQ;
 				}
 			}
+
 		}
-		// Some Sanity Checks
-		assert(occurenceConstraint.comparator != null);
-		assert(occurenceTerm.constant != 0);
-		
-		// Test whether the variable is only unnecessary or a slack Variable 
-		//FIXME tomorrow... this is quite wrong
-		if (occurenceConstraint.comparator != Comparator.EQ) return false;
-		if (occurenceConstraint.comparator == Comparator.LEQ) {
-			return (occurenceTerm.constant > 0);
-		} else {
-			return (occurenceTerm.constant < 0);
-		}
+		return toAlter;
+	}
+
+	public LPProgram toDualForm() {
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
+
+	public LPProgram removeSplitVariables() {
+		throw new UnsupportedOperationException("Not yet implemented");
 	}
 }

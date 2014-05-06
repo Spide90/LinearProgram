@@ -4,15 +4,19 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TermList {
+public class Expression {
 	
 	public LinkedList<Term> list;
 	
-	public TermList() {
+	public Expression() {
 		list = new LinkedList<Term>();
 	}
 	
-	public TermList(LinkedList<Term> list) {
+	public boolean removeTerm(Term t) {
+		return list.remove(t);
+	}
+	
+	public Expression(LinkedList<Term> list) {
 		this.list = list;
 	}
 	
@@ -48,8 +52,8 @@ public class TermList {
 		}
 	}
 	
-	public TermList getCopyForProgram(LPProgram prog) {
-		TermList newList = new TermList();
+	public Expression getCopyForProgram(LPProgram prog) {
+		Expression newList = new Expression();
 		for (Term t : list) {
 			newList.list.add(new Term(prog.getVariable(t.variable.name),t.constant));
 		}

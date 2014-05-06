@@ -19,4 +19,10 @@ public class Term {
 		return Float.toString(constant) + variable;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Term)) return false;
+		Term nT = (Term) obj;
+		return nT.variable.equals(variable) && (nT.constant == constant);
+	}
 }

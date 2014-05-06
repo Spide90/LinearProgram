@@ -2,10 +2,10 @@ package model;
 
 public class Objective {
 	
-	public TermList function = null;
+	public Expression function = null;
 	public Header head = Header.MIN;
 	
-	public Objective(TermList function, Header head) {
+	public Objective(Expression function, Header head) {
 		this.head = head;
 		this.function = function;
 	}

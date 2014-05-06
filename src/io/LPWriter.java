@@ -8,7 +8,7 @@ import model.Header;
 import model.LPProgram;
 import model.Objective;
 import model.Term;
-import model.TermList;
+import model.Expression;
 import model.Variable;
 
 public class LPWriter {
@@ -85,7 +85,7 @@ public class LPWriter {
 		writer.println();
 	}
 	
-	public void writeTermList(TermList list) {
+	public void writeTermList(Expression list) {
 		boolean first = true;
 		for (Term t : list.list) {
 			if (first) {

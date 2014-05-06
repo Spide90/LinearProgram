@@ -13,7 +13,7 @@ import model.Header;
 import model.LPProgram;
 import model.Objective;
 import model.Term;
-import model.TermList;
+import model.Expression;
 import model.Variable;
 
 import org.junit.Before;
@@ -43,13 +43,13 @@ public class writeTest {
 		
 		exp1.add(termX1);
 		exp1.add(termY);
-		TermList t1 = new TermList(exp1); 
+		Expression t1 = new Expression(exp1); 
 		
 		exp2.add(termX2);
-		TermList t2 = new TermList(exp2);
+		Expression t2 = new Expression(exp2);
 		
 		exp3.add(termZ);
-		TermList t3 = new TermList(exp3);
+		Expression t3 = new Expression(exp3);
 		
 		Constraint c1 = new Constraint(t2,5,Comparator.GEQ);
 		Constraint c2 = new Constraint(t3, 0, Comparator.LEQ);

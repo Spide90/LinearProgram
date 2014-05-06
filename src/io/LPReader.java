@@ -13,7 +13,7 @@ import model.Header;
 import model.LPProgram;
 import model.Objective;
 import model.Term;
-import model.TermList;
+import model.Expression;
 import model.Variable;
 
 /**
@@ -87,7 +87,7 @@ public class LPReader {
 			header = Header.MIN;
 		}
 		// read objective function
-		TermList termList = new TermList();
+		Expression termList = new Expression();
 		while (true) {
 			String line = null;
 			try {
@@ -184,7 +184,7 @@ public class LPReader {
 	private void createConstraints() {
 		System.out.println(lp);
 		while(true) {
-			TermList termList = new TermList();
+			Expression termList = new Expression();
 			String line = null;
 			try {
 				line = reader.readLine();
