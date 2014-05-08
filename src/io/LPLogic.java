@@ -20,6 +20,13 @@ public class LPLogic {
 		this.source = source;
 	}
 
+	/**
+	 * Gets an LPProgram as input and removes any non-LEQ constraint and
+	 * replaces then with equivalent LEQ constraints. (e.g. a + b = c <=> a + b
+	 * <= c and a + b >= c)
+	 * 
+	 * @return a new LProgram without non-LEQ constraints.
+	 */
 	public LPProgram leqOnlyConstraints() {
 		LPProgram toAlter = source.getCopy();
 		ListIterator<Constraint> iter = toAlter.constraints.listIterator();
@@ -81,16 +88,16 @@ public class LPLogic {
 				continue;
 			if (postingList.size() == 0)
 				continue;
-			
+
 			Constraint c = postingList.getFirst();
 			if (c.comparator != Comparator.EQ)
 				continue;
-			
+
 			Term t = c.terms.findTerm(v);
 			assert (t != null);
-			boolean postiveVar = !v.lowerIsInfinity
-					&& v.upperIsInfinity && v.lowerBound == 0;
-			
+			boolean postiveVar = !v.lowerIsInfinity && v.upperIsInfinity
+					&& v.lowerBound == 0;
+
 			c.terms.removeTerm(t);
 			if (postiveVar) {
 				if (t.constant > 0) {

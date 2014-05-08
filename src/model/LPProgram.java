@@ -7,6 +7,16 @@ import java.util.Map.Entry;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
+/**
+ * 
+ * The LLprogram represents the entire Linear Program. The components are:
+ * 
+ * <ul>
+ * <li>The Objective Function.</li>
+ * <li>A List of constraints</li>
+ * <li>A Hash Map of all variables</li>
+ * </ul>
+ */
 public class LPProgram {
 
 	public Objective objective = null;
@@ -19,6 +29,10 @@ public class LPProgram {
 				+ constraints.toString();
 	}
 
+	/**
+	 * Has to be used to add a variable to the helper structures variables. Has
+	 * to be kept consistence during the initiallization.
+	 */
 	public void addVariable(Variable var) {
 		if (variables.containsKey(var.name)) {
 			throw new IllegalStateException(
@@ -41,7 +55,7 @@ public class LPProgram {
 
 	public HashMap<String, LinkedList<Constraint>> getPostingList() {
 		HashMap<String, LinkedList<Constraint>> map = new HashMap<String, LinkedList<Constraint>>();
-		for (Entry<String,Variable> e : variables.entrySet()) {
+		for (Entry<String, Variable> e : variables.entrySet()) {
 			map.put(e.getKey(), new LinkedList<Constraint>());
 		}
 		for (Constraint c : constraints) {

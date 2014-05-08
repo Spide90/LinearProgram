@@ -4,6 +4,10 @@ import java.io.File;
 
 import model.LPProgram;
 
+/**
+ * Class that handles the user input and contains the main();
+ *
+ */
 public class Console {
 
 	public static String fileIn = "defaultIn.lp";
@@ -40,7 +44,7 @@ public class Console {
 			writer.close();
 			break;
 		case "removeslack":
-			writer.writeProgram(logic.leqOnlyConstraints());
+			writer.writeProgram(logic.removeSlackVariables());
 			writer.close();
 			break;
 		case "removesplit":

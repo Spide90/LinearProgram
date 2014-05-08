@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * 
+ * A Constraint consist of a expression (list of terms), a comparator(<=,=>,=)
+ * and one constant. (e.g. 3x + y <= 3)
+ * 
+ */
 public class Constraint {
 
 	public Expression terms = null;
@@ -12,8 +18,13 @@ public class Constraint {
 		this.comparator = comparator;
 	}
 
+	/**
+	 * @param prog a complete copy of the constraint
+	 * @return
+	 */
 	public Constraint getCopyForProgram(LPProgram prog) {
-		return new Constraint(terms.getCopyForProgram(prog), this.constant, this.comparator);
+		return new Constraint(terms.getCopyForProgram(prog), this.constant,
+				this.comparator);
 	}
 
 	@Override
