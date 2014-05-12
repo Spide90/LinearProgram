@@ -1,6 +1,5 @@
 package test;
 
-import static org.junit.Assert.*;
 import io.Console;
 import io.LPLogic;
 import io.LPReader;

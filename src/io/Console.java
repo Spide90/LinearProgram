@@ -2,6 +2,7 @@ package io;
 
 import java.io.File;
 
+import test.logicTest;
 import model.LPProgram;
 
 /**
@@ -18,6 +19,12 @@ public class Console {
 	public static String Command = "copy";
 	
 	public static void main(String[] args) {
+		if (args.length == 1 && args[0].equals("-demo")) {
+			logicTest test = new logicTest();
+			test.testFindSlack();
+			test.testLeqOnly();
+			return;
+		}
 		if (args.length < 3) {
 			printHelp();
 			return;
