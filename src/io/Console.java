@@ -9,6 +9,9 @@ import model.LPProgram;
  *
  */
 public class Console {
+	
+	public static Boolean DEBUG = false;
+	public static Boolean VERBOSE = false;
 
 	public static String fileIn = "defaultIn.lp";
 	public static String fileOut = "defaultOut.lp";
@@ -16,18 +19,29 @@ public class Console {
 	
 	public static void main(String[] args) {
 		if (args.length < 3) {
-			System.out.println("Command Format is: [command] [fileIn] [fileOut]\n"
-					+ "Commands are: \n"
-					+ "- copy\n"
-					+ "- removeLEQ\n"
-					+ "- removeSlack\n"
-					+ "- removeSlpit\n"
-					+ "- toDual");
+			printHelp();
 			return;
 		}
 		Command = args[0];
 		fileIn = args[1];
 		fileOut = args[2];
+		
+		if (args.length > 3) {
+			for (int i = 3; i < args.length; i++) {
+				switch (args[i].toLowerCase()) {
+				case "--verbose":
+					VERBOSE = true;
+					System.out.println("Set VERBOSE == true");
+					break;
+				case "--debug":
+					DEBUG = true;
+					System.out.println("Set DEBUG == true");
+					break;
+				default:
+					System.out.println("Unknown parameter "+args[i]);
+				}
+			}
+		}
 		
 		LPReader reader = new LPReader(new File(fileIn));
 		LPWriter writer = new LPWriter(fileOut);
@@ -39,7 +53,7 @@ public class Console {
 			writer.writeProgram(program);
 			writer.close();
 			break;
-		case "removeleq":
+		case "toleq":
 			writer.writeProgram(logic.leqOnlyConstraints());
 			writer.close();
 			break;
@@ -56,8 +70,22 @@ public class Console {
 			writer.close();
 			break;
 		default:
-			System.out.println("[ERROR] Unkown Command!");
+			System.out.println("[ERROR] Unknown Command!");
+			printHelp();
 		}
+	}
+	
+	public static void printHelp(){
+		System.out.println("Command Format is: [command] [fileIn] [fileOut] [Parameter]\n"
+				+ "Commands are: \n"
+				+ "- copy\n"
+				+ "- toLEQ\n"
+				+ "- removeSlack\n"
+				+ "- removeSlpit\n"
+				+ "- toDual \n"
+				+ "Parameters are: \n"
+				+ "--verbose\n"
+				+ "--debug");
 	}
 
 }

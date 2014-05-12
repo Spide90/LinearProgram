@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.*;
+import io.Console;
 import io.LPReader;
 import io.LPWriter;
 
@@ -25,6 +26,9 @@ public class writeTest {
 	
 	@Before
 	public void setUp() throws Exception {
+		Console.VERBOSE = true;
+		Console.DEBUG = true;
+		
 		testProgram = new LPProgram();
 		Variable varX = new Variable("x");
 		varX.setSource(testProgram);
@@ -61,8 +65,8 @@ public class writeTest {
 		testProgram.objective = new Objective(t1, Header.MAX);
 		testProgram.constraints = cs;
 		
-		System.out.println("TestProgram 1: ");
-		System.out.println(testProgram);
+		//System.out.println("TestProgram 1: ");
+		//System.out.println(testProgram);
 	}
 
 	@Test

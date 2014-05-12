@@ -182,7 +182,6 @@ public class LPReader {
 	}
 
 	private void createConstraints() {
-		System.out.println(lp);
 		while(true) {
 			Expression termList = new Expression();
 			String line = null;
@@ -276,7 +275,6 @@ public class LPReader {
 	}
 
 	private void createBounds() {
-		System.out.println(lp);
 		while(true) {
 			String line = null;
 			try {

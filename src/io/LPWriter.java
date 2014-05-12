@@ -1,5 +1,10 @@
 package io;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map.Entry;
 
@@ -18,14 +23,16 @@ import model.Variable;
 public class LPWriter {
 
 	private PrintWriter writer;
+	private String target = "defaultTarget.lp";
 	int labelId = 0;
 
 	public LPWriter(String target) {
+		this.target = target;
 		try {
 			writer = new PrintWriter(target, "UTF-8");
 		} catch (Exception e) {
 			System.out
-					.println("UTF-8 is not supported? Thats bad...Yo should change that!");
+					.println("UTF-8 is not supported? Thats bad...You should change that!");
 		}
 	}
 
@@ -38,13 +45,29 @@ public class LPWriter {
 		writer.println("Bounds");
 		for (Entry<String, Variable> e : program.variables.entrySet()) {
 			writeBound(e.getValue());
-			System.out.println("[DEBUG] write Bounds" + e.getKey());
 		}
 		writer.println("END");
 	}
 
 	public void close() {
 		writer.close();
+		if (Console.VERBOSE) {
+			System.out.println("\nRESULT...\n");
+			BufferedReader in;
+			try {
+				in = new BufferedReader(new FileReader(target));
+				String line = in.readLine();
+				while(line != null)
+				{
+				  System.out.println(line);
+				  line = in.readLine();
+				}
+				in.close();
+			} catch (IOException e) {
+				System.out.println("[ERROR] could not print Output...");
+			}
+
+		}
 	}
 
 	public void writeObjective(Objective objective) {
@@ -62,14 +85,12 @@ public class LPWriter {
 			return;
 		}
 		if (!(!var.lowerIsInfinity && var.lowerBound == 0)) {
-			writer.write((var.lowerIsInfinity ? "-Inf" : Float
-					.valueOf(var.lowerBound)) + " <= ");
+			writer.write((var.lowerIsInfinity ? "-Inf" : constantToString(var.lowerBound)) + " <= ");
 		}
 		writer.write(var.name);
 		if (!var.upperIsInfinity) {
 			writer.write(" <= "
-					+ (var.lowerIsInfinity ? "-Inf" : Float
-							.valueOf(var.lowerBound)));
+					+ (var.upperIsInfinity ? "Inf" : constantToString(var.upperBound)));
 		}
 		writer.println();
 	}
@@ -90,7 +111,7 @@ public class LPWriter {
 		default:
 			break;
 		}
-		writer.print(c.constant);
+		writer.print(c.constant == Math.ceil(c.constant) ? Integer.toString((int) c.constant) : c.constant);
 		writer.println();
 	}
 
@@ -98,13 +119,24 @@ public class LPWriter {
 		boolean first = true;
 		for (Term t : list.list) {
 			if (first) {
-				writer.print(t.constant + " " + t.variable + " ");
+				writer.print((t.constant == 1f ? "" : (t.constant == -1f ? "-"
+						: t.constant == Math.ceil(t.constant) ? Integer
+								.toString((int) t.constant) : t.constant))
+						+ " " + t.variable + " ");
 				first = false;
 				continue;
 			}
-			writer.print((t.constant < 0 ? " -" : " +") + " "
-					+ Math.abs(t.constant) + " " + t.variable);
+			writer.print((t.constant < 0 ? " -" : " +")
+					+ " "
+					+ (Math.abs(t.constant) == 1f ? "" : t.constant == Math
+							.ceil(t.constant) ? Integer.toString((int) Math
+							.abs(t.constant)) : Math.abs(t.constant)) + " "
+					+ t.variable);
 		}
+	}
+	
+	public String constantToString(float c) {
+		return c == Math.ceil(c) ? Integer.toString((int) c) : Float.toString(c);
 	}
 
 }

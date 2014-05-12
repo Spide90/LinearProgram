@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.*;
+import io.Console;
 import io.LPLogic;
 import io.LPReader;
 import io.LPWriter;
@@ -16,14 +17,16 @@ public class logicTest {
 
 	@Before
 	public void setUp() throws Exception {
+		Console.VERBOSE = true;
+		Console.DEBUG = true;
 	}
 
 	@Test
 	public void testReadAndWrite() {
-		LPReader reader = new LPReader(new File("testFile.lp"));
+		LPReader reader = new LPReader(new File("testLeqOnlyIn.lp"));
 		LPProgram readLpProgram = reader.getLP();
 		LPLogic logic = new LPLogic(readLpProgram);
-		LPWriter writer = new LPWriter("logicTest1.lp");
+		LPWriter writer = new LPWriter("testLeqOnlyOut.lp");
 		writer.writeProgram(logic.leqOnlyConstraints());
 		writer.close();
 	}

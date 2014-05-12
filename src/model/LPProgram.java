@@ -90,7 +90,6 @@ public class LPProgram {
 		LPProgram newProgram = new LPProgram();
 		for (Entry<String, Variable> e : variables.entrySet()) {
 			newProgram.addVariable(e.getValue());
-			System.out.println("DEBUG - (" + e.getKey() + e.getValue() + ")");
 		}
 		for (Constraint c : constraints) {
 			newProgram.constraints.add(c.getCopyForProgram(newProgram));
