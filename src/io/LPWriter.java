@@ -52,7 +52,7 @@ public class LPWriter {
 	public void close() {
 		writer.close();
 		if (Console.VERBOSE) {
-			System.out.println("\nRESULT...\n");
+			System.out.println("__RESULT:");
 			BufferedReader in;
 			try {
 				in = new BufferedReader(new FileReader(target));

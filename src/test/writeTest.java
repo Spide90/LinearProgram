@@ -71,6 +71,7 @@ public class writeTest {
 
 	@Test
 	public void testWrite() {
+		System.out.println("___WRITE TEST");
 		LPWriter writer = new LPWriter("writeTest1.lp");
 		writer.writeProgram(testProgram);
 		writer.close();
@@ -78,6 +79,7 @@ public class writeTest {
 	
 	@Test
 	public void testReadAndWrite() {
+		System.out.println("___READ AND WRITE TEST");
 		LPReader reader = new LPReader(new File("testFile.lp"));
 		LPProgram readLpProgram = reader.getLP();
 		LPWriter writer = new LPWriter("readWriteTest.lp");

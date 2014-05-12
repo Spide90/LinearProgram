@@ -34,6 +34,20 @@ public class LPReader {
 			e.printStackTrace();
 		}
 		readLP();
+		BufferedReader in;
+		try {
+			System.out.println("__INPUT:");
+			in = new BufferedReader(new FileReader(file));
+			String line = in.readLine();
+			while(line != null)
+			{
+			  System.out.println(line);
+			  line = in.readLine();
+			}
+			in.close();
+		} catch (IOException e) {
+			System.out.println("[ERROR] could not print Output...");
+		}
 	}
 
 	private void readLP() {

@@ -22,7 +22,8 @@ public class logicTest {
 	}
 
 	@Test
-	public void testReadAndWrite() {
+	public void testLeqOnly() {
+		System.out.println("___TO LEQ ONLY TEST");
 		LPReader reader = new LPReader(new File("testLeqOnlyIn.lp"));
 		LPProgram readLpProgram = reader.getLP();
 		LPLogic logic = new LPLogic(readLpProgram);
@@ -33,6 +34,7 @@ public class logicTest {
 	
 	@Test
 	public void testFindSlack() {
+		System.out.println("___REMOVE SLACK TEST");
 		LPReader reader = new LPReader(new File("testFileSlackIn.lp"));
 		LPProgram readLpProgram = reader.getLP();
 		LPLogic logic = new LPLogic(readLpProgram);
